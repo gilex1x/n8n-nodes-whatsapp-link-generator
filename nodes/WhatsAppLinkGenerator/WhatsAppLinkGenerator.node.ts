@@ -4,7 +4,7 @@ import type {
     INodeType,
     INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
 
 export class WhatsAppLinkGenerator implements INodeType {
@@ -19,8 +19,8 @@ export class WhatsAppLinkGenerator implements INodeType {
         defaults: {
             name: 'WhatsAppLinkGenerator',
         },
-        inputs: [NodeConnectionType.Main],
-        outputs: [NodeConnectionType.Main],
+        inputs: ['main'],
+        outputs: ['main'],
         credentials: [],
         properties: [
             // Resources and operations will go here
@@ -60,7 +60,7 @@ export class WhatsAppLinkGenerator implements INodeType {
 
                 // Validate phone number (should contain only digits after cleaning)
                 if (!/^\d+$/.test(cleanPhoneNumber)) {
-                    throw new Error(`Invalid phone number format: ${phoneNumber}`);
+                    throw new NodeOperationError(this.getNode(), `Invalid phone number format: ${phoneNumber}`);
                 }
 
                 // Encode the message for URL

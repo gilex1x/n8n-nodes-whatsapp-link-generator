@@ -1,48 +1,124 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-whatsapp-link-generator
 
-# n8n-nodes-starter
+An n8n community node that generates WhatsApp links with custom messages for easy integration into your workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+![n8n](https://img.shields.io/badge/n8n-community%20node-red)
+![npm](https://img.shields.io/npm/v/n8n-nodes-whatsapp-link-generator)
+![license](https://img.shields.io/npm/l/n8n-nodes-whatsapp-link-generator)
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## What does this node do?
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+The WhatsApp Link Generator node creates WhatsApp chat links (`wa.me` URLs) that automatically open WhatsApp with a specific phone number and pre-filled message. This is useful for:
 
-## Prerequisites
+- Customer service automation
+- Marketing campaigns
+- Contact generation workflows
+- Lead management systems
+- Any workflow that needs to create direct WhatsApp conversation links
 
-You need the following installed on your development machine:
+## Installation
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## Using this starter
+Or install via npm:
+```bash
+npm install n8n-nodes-whatsapp-link-generator
+```
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+## Node Configuration
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+### Inputs
 
-## More information
+The node accepts the following input parameters:
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| **WhatsApp Number** | String | Yes | Phone number to generate WhatsApp link for. Accepts formats with or without country code (e.g., `+1234567890` or `1234567890`) |
+| **Custom Message** | String | No | Pre-filled message for the WhatsApp conversation. Will be URL-encoded automatically |
+
+### Outputs
+
+The node outputs the original input data plus these additional fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `phoneNumber` | String | The original phone number as entered |
+| `message` | String | The original message as entered |
+| `whatsappLink` | String | The generated WhatsApp link (format: `https://wa.me/{number}?text={encoded_message}`) |
+
+### Example Output
+
+```json
+{
+  "phoneNumber": "+1234567890",
+  "message": "Hello! I'm interested in your services.",
+  "whatsappLink": "https://wa.me/1234567890?text=Hello%21%20I%27m%20interested%20in%20your%20services."
+}
+```
+
+## Usage Examples
+
+### Basic Usage
+1. Add the WhatsApp Link Generator node to your workflow
+2. Enter a phone number (e.g., `+1234567890`)
+3. Add your custom message (e.g., `Hello! I'm contacting you from our website.`)
+4. The node will output a ready-to-use WhatsApp link
+
+### Integration with Other Nodes
+- **Webhooks**: Generate WhatsApp links from form submissions
+- **Google Sheets**: Process contact lists and generate bulk WhatsApp links
+- **HTTP Request**: Send the generated links via email or SMS
+- **Slack/Discord**: Share WhatsApp contact links in team channels
+
+## Phone Number Format
+
+The node automatically cleans phone numbers by removing:
+- Spaces
+- Dashes (`-`)
+- Parentheses `()`
+- Plus signs (`+`)
+
+**Supported formats:**
+- `+1234567890` ✅
+- `1234567890` ✅
+- `+1 (234) 567-890` ✅
+- `+1-234-567-890` ✅
+
+**Note**: The phone number must contain only digits after cleaning. International format is recommended.
+
+## Error Handling
+
+The node includes built-in error handling:
+- **Invalid phone numbers**: Will throw a `NodeOperationError` if the phone number contains non-numeric characters after cleaning
+- **Continue on fail**: Can be configured to continue processing other items if one fails
+
+## Compatibility
+
+- **n8n version**: 1.0.0+
+- **Node.js version**: 20.15+
+
+## Development
+
+This node is built with TypeScript and follows n8n community node standards.
+
+### Building locally
+```bash
+npm run build
+```
+
+### Linting
+```bash
+npm run lint
+```
 
 ## License
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+[MIT](LICENSE.md)
+
+## Support
+
+For issues and feature requests, please visit the [GitHub repository](https://github.com/gilex1x/n8n-nodes-whatsapp-link-generator).
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
