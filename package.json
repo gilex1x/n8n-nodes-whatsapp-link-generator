@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-whatsapp-link-generator",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "n8n community node for generating WhatsApp links with custom messages",
   "keywords": [
     "n8n-community-node-package",
