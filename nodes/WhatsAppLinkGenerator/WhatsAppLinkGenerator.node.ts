@@ -1,8 +1,8 @@
-import type {
-    IExecuteFunctions,
-    INodeExecutionData,
-    INodeType,
-    INodeTypeDescription,
+import {
+    type IExecuteFunctions,
+    type INodeExecutionData,
+    type INodeType,
+    type INodeTypeDescription,
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
@@ -87,13 +87,19 @@ export class WhatsAppLinkGenerator implements INodeType {
                     returnData.push({
                         json: {
                             ...items[itemIndex].json,
-                            error: error.message
+                            error: (error as Error).message
                         },
-                        error,
+                        error: error as NodeOperationError,
                         pairedItem: itemIndex,
                     });
                 } else {
-                    throw error;
+                    if (error !== undefined && error !== null && typeof error === 'object' && 'context' in error) {
+                        (error as any).context.itemIndex = itemIndex;
+                        throw error;
+                    }
+                    throw new NodeOperationError(this.getNode(), error as Error, {
+                        itemIndex,
+                    });
                 }
             }
         }
