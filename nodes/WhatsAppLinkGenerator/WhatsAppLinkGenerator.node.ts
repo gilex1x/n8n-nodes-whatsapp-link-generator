@@ -72,7 +72,6 @@ export class WhatsAppLinkGenerator implements INodeType {
                 // Add the result to the item
                 const newItem: INodeExecutionData = {
                     json: {
-                        ...items[itemIndex].json,
                         phoneNumber: phoneNumber,
                         message: message,
                         whatsappLink: whatsappLink
@@ -86,7 +85,6 @@ export class WhatsAppLinkGenerator implements INodeType {
                 if (this.continueOnFail()) {
                     returnData.push({
                         json: {
-                            ...items[itemIndex].json,
                             error: (error as Error).message
                         },
                         error: error as NodeOperationError,
